@@ -1,0 +1,9 @@
+[package]
+name = "thibaud_dauce"
+version = "0.1.0"
+authors = ["Thibaud Dauce <git@hadibut.fr>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
