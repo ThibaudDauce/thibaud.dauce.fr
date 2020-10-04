@@ -1,0 +1,21 @@
+[submodule "content/talks/afup-tours-programmation-fonctionnelle"]
+	path = content/talks/afup-tours-programmation-fonctionnelle
+	url = git@gitlab.com:thibauddauce/afup-tours-programmation-fonctionnelle.git
+[submodule "content/talks/jug-event-store"]
+	path = content/talks/jug-event-store
+	url = git@github.com:ThibaudDauce/jug-event-store.git
+[submodule "content/talks/jug-internet"]
+	path = content/talks/jug-internet
+	url = git@github.com:ThibaudDauce/jug-internet.git
+[submodule "content/talks/orleans-tech-conf-informatique-complexite-ecologie"]
+	path = content/talks/orleans-tech-conf-informatique-complexite-ecologie
+	url = git@gitlab.com:thibauddauce/orleans-tech-conf-informatique-complexite-ecologie.git
+[submodule "content/talks/orleans-tech-event-sourcing"]
+	path = content/talks/orleans-tech-event-sourcing
+	url = git@framagit.org:ThibaudDauce/orleans-tech-event-sourcing.git
+[submodule "content/talks/orleans-tech-programmation-fonctionnelle"]
+	path = content/talks/orleans-tech-programmation-fonctionnelle
+	url = git@framagit.org:ThibaudDauce/orleans-tech-programmation-fonctionnelle
+[submodule "content/talks/wild-code-school-decouverte-laravel"]
+	path = content/talks/wild-code-school-decouverte-laravel
+	url = git@framagit.org:ThibaudDauce/wild-code-school-decouverte-laravel.git
