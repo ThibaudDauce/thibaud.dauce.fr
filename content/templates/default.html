@@ -11,7 +11,6 @@
     <link rel="shortcut icon" href="/images/favicon.png">
 
     <meta property="og:title" content="{{ title }}">
-    <meta property="og:url" content="https://thibaud.dauce.fr$url$">
 
     <meta name="twitter:card" content="summary">
     <meta name="twitter:site" content="@ThibaudDauce" />
@@ -37,25 +36,25 @@
             <span class="mt-1 mx-3 text-4xl text-grey-darker select-none">&middot;</span>
             
             {% if talks %}
-                <a href="/talks.html" class="no-underline font-semibold text-black">Talks</a>
+                <a href="/talks.html" class="no-underline font-semibold text-black">Conférences</a>
             {% else %}
-                <a href="/talks.html" class="no-underline font-semibold text-grey-darker hover:text-black">Talks</a>
+                <a href="/talks.html" class="no-underline font-semibold text-grey-darker hover:text-black">Conférences</a>
             {% endif %}
             
             <span class="mt-1 mx-3 text-4xl text-grey-darker select-none">&middot;</span>
             
             {% if hiking %}
-                <a href="/hiking.html" class="no-underline font-semibold text-black">Hiking</a>
+                <a href="/hiking.html" class="no-underline font-semibold text-black">Randonnées</a>
             {% else %}
-                <a href="/hiking.html" class="no-underline font-semibold text-grey-darker hover:text-black">Hiking</a>
+                <a href="/hiking.html" class="no-underline font-semibold text-grey-darker hover:text-black">Randonnées</a>
             {% endif %}
             
             <span class="mt-1 mx-3 text-4xl text-grey-darker select-none">&middot;</span>
             
             {% if about %}
-                <a href="/about.html" class="no-underline font-semibold text-black">About</a>
+                <a href="/about.html" class="no-underline font-semibold text-black">À propos</a>
             {% else %}
-                <a href="/about.html" class="no-underline font-semibold text-grey-darker hover:text-black">About</a>
+                <a href="/about.html" class="no-underline font-semibold text-grey-darker hover:text-black">À propos</a>
             {% endif %}
         </nav>
     </header>
@@ -63,9 +62,9 @@
     {% block content %}
     {% endblock content %}
     
-    <footer class="container text-center px-4 py-12 mt-12 text-base text-grey-darker">
+    <footer class="container text-center px-4 py-12 mt-12 text-sm text-grey-darker">
         <p>
-            This blog is powered by <a href="http://jaspervdj.be/hakyll/" class="text-indigo">Hakyll</a>. If you find an error or a typo, <a href="https://github.com/ThibaudDauce/thibaud-dauce/blob/master/$path$" class="text-indigo">please contribute on Github!</a>
+            Ce blog est statiquement généré en Rust. Si vous trouvez une faute ou un problème, <a href="https://github.com/ThibaudDauce/thibaud-dauce/blob/master/$path$" class="text-indigo">vous pouvez contribuer via Github</a>.
         </p>
     </footer>
 </body>

@@ -72,7 +72,7 @@ fn main() {
         let mut context = Context::new();
         context.insert("post", &post);
         context.insert("title", &post.title);
-        context.insert("subtitle", "Thibaud's blog");
+        context.insert("subtitle", "Thibaud Dauce");
         context.insert("blog", &true);
         let mut post_html = tera.render("post.html", &context).unwrap();
 
@@ -126,7 +126,8 @@ fn main() {
             //         .join("")
             // }).collect::<Vec<String>>().join("\n");
 
-            post_html.replace_range(code_in_html.range(), &output_html);
+            let range = code_in_html.range();
+            post_html.replace_range(range, &output_html);
         }
 
         // for found in markdown_regexp.captures_iter(&post.markdown.clone()) {
@@ -151,8 +152,8 @@ fn main() {
 
     let mut context = Context::new();
     context.insert("posts", &posts);
-    context.insert("title", "My latests posts");
-    context.insert("subtitle", "Thibaud's blog");
+    context.insert("title", "Mes derniers articles");
+    context.insert("subtitle", "Thibaud Dauce");
     context.insert("blog", &true);
     let index = tera.render("index.html", &context).unwrap();
     fs::write("build/index.html", index).unwrap();
@@ -164,22 +165,24 @@ fn main() {
     fs::write("build/feed.xml", index).unwrap();
 
     let mut context = Context::new();
-    context.insert("title", "About me");
-    context.insert("subtitle", "Thibaud's blog");
+    context.insert("title", "À propos");
+    context.insert("subtitle", "Thibaud Dauce");
+    context.insert("about", &true);
     let about = tera.render("about.html", &context).unwrap();
     fs::write("build/about.html", about).unwrap();
 
     let mut context = Context::new();
-    context.insert("title", "My latest talks");
-    context.insert("subtitle", "Thibaud's blog");
+    context.insert("title", "Mes dernières conférences");
+    context.insert("subtitle", "Thibaud Dauce");
     context.insert("talks", &talks);
     let talks = tera.render("talks.html", &context).unwrap();
     fs::write("build/talks.html", talks).unwrap();
 
     let mut context = Context::new();
-    context.insert("title", "My latest hikes");
-    context.insert("subtitle", "Thibaud's blog");
+    context.insert("title", "Mes dernières randonnées");
+    context.insert("subtitle", "Thibaud Dauce");
     context.insert("traces", &traces);
+    context.insert("hiking", &true);
     let hiking = tera.render("hiking.html", &context).unwrap();
     fs::write("build/hiking.html", hiking).unwrap();
 
