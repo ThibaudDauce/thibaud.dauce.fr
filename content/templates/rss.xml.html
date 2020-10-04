@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"
+    xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <channel>
+        <title>Thibaud Dauce's blog</title>
+        <link>https://thibaud.dauce.fr</link>
+        <description><![CDATA[All Thibaud Dauce's articles]]></description>
+        <atom:link href="https://thibaud.dauce.fr/feed.xml" rel="self" type="application/rss+xml" />
+        <lastBuildDate>{{ latest_post.date_rss }}</lastBuildDate>
+        {% for post in posts | reverse %}
+            <item>
+                <title><![CDATA[{{ post.title|safe }}]]</title>
+                <link>https://thibaud.dauce.fr{{ post.url|safe }}</link>
+                <description><![CDATA[{{ post.html|safe }}]]></description>
+                <pubDate>{{ post.date_rss }}</pubDate>
+                <guid>https://thibaud.dauce.fr{{ post.url|safe }}</guid>
+                <dc:creator>Thibaud Dauce</dc:creator>
+            </item>
+        {% endfor %}
+    </channel>
+</rss>

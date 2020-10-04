@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{{ title }} — Thibaud's blog</title>
+    <link rel="stylesheet" href="/css/app.css"/>
+
+    <link rel="alternate" type="application/rss+xml" title="Thibaud Dauce's blog" href="/feed.xml">
+    <link rel="shortcut icon" href="/images/favicon.png">
+
+    <meta property="og:title" content="{{ title }}">
+    <meta property="og:url" content="https://thibaud.dauce.fr$url$">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@ThibaudDauce" />
+    {% if description %}
+        <meta property="og:description" content="$description$">
+    {% endif %}
+</head>
+<body class="overflow-x-hidden bg-grey-lightest text-black font-serif leading-normal min-h-screen flex flex-col">
+    <header class="container py-6 sm:py-12 px-4">
+        {% if subtitle %}
+            <h2 class="text-lg sm:text-xl font-normal mb-2">
+                <a href="/" class="no-underline text-black">{{ subtitle }}</a>
+            </h2>
+        {% endif %}
+        <h1 class="text-2xl sm:text-4xl font-normal mb-4">{{ title }}</h1>
+        <nav class="flex items-center">
+            {% if blog %}
+                <a href="/" class="no-underline font-semibold text-black">Blog</a>
+            {% else %}
+                <a href="/" class="no-underline font-semibold text-grey-darker hover:text-black">Blog</a>
+            {% endif %}
+            
+            <span class="mt-1 mx-3 text-4xl text-grey-darker select-none">&middot;</span>
+            
+            {% if talks %}
+                <a href="/talks.html" class="no-underline font-semibold text-black">Talks</a>
+            {% else %}
+                <a href="/talks.html" class="no-underline font-semibold text-grey-darker hover:text-black">Talks</a>
+            {% endif %}
+            
+            <span class="mt-1 mx-3 text-4xl text-grey-darker select-none">&middot;</span>
+            
+            {% if hiking %}
+                <a href="/hiking.html" class="no-underline font-semibold text-black">Hiking</a>
+            {% else %}
+                <a href="/hiking.html" class="no-underline font-semibold text-grey-darker hover:text-black">Hiking</a>
+            {% endif %}
+            
+            <span class="mt-1 mx-3 text-4xl text-grey-darker select-none">&middot;</span>
+            
+            {% if about %}
+                <a href="/about.html" class="no-underline font-semibold text-black">About</a>
+            {% else %}
+                <a href="/about.html" class="no-underline font-semibold text-grey-darker hover:text-black">About</a>
+            {% endif %}
+        </nav>
+    </header>
+    
+    {% block content %}
+    {% endblock content %}
+    
+    <footer class="container text-center px-4 py-12 mt-12 text-base text-grey-darker">
+        <p>
+            This blog is powered by <a href="http://jaspervdj.be/hakyll/" class="text-indigo">Hakyll</a>. If you find an error or a typo, <a href="https://github.com/ThibaudDauce/thibaud-dauce/blob/master/$path$" class="text-indigo">please contribute on Github!</a>
+        </p>
+    </footer>
+</body>
+</html>

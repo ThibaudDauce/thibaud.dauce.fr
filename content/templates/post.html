@@ -1,0 +1,16 @@
+{% extends "default.html" %}
+
+{% block content %}
+
+<main role="main" class="container px-4 py-4 sm:py-8">
+    <p class="mb-12 text-grey-dark italic">
+        Published {{ post.date_en }}
+    </p>
+
+    <div class="content">
+        {{ post.html | safe }}
+    </div>
+</main>
+
+{% endblock content %}
+    

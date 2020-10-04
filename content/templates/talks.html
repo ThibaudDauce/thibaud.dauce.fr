@@ -1,0 +1,46 @@
+{% extends "default.html" %}
+
+{% block content %}
+    <main role="main" class="container px-4 py-8">
+        {% for talk in talks | reverse %}
+            <div class="mb-16">
+                <h2 class="text-xl sm:text-2xl mb-4 -pt-1 flex flex-col sm:flex-row justify-between">
+                    <span class="w-full">{{ talk.title }}</span>
+                    <span class="text-base text-grey-dark flex-no-shrink">{{ talk.date_fr }}</span>
+                </h2>
+                
+                <div class="content mb-8">
+                    {{ talk.html | safe }}
+                </div>
+                
+                <div class="flex -mx-3">
+                    {% if talk.slides %}
+                    <a href="{{ talk.slides }}"
+                        class="mx-3 flex items-center text-sm no-underline font-semibold text-black border-2 border-grey-darkest px-2 py-1"
+                        >
+                        <svg class="h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M0 4c0-1.1.9-2 2-2h7l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2 2v10h16V6H2z"/></svg>        
+                        Slides
+                    </a>
+                    {% endif %}
+                    {% if talk.video %}
+                    <a href="{{ talk.video }}"
+                        class="mx-3 flex items-center text-sm no-underline font-semibold text-black border-2 border-grey-darkest px-2 py-1"
+                        >
+                        <svg class="h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM7 6l8 4-8 4V6z"/></svg>
+                        Video
+                    </a>
+                    {% endif %}
+                    {% if talk.tweet %}
+                    <a href="{{ talk.tweet }}"
+                        class="mx-3 flex items-center text-sm no-underline font-semibold text-black border-2 border-grey-darkest px-2 py-1"
+                        >
+                        <svg class="h-4 mr-1" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M1684 408q-67 98-162 167 1 14 1 42 0 130-38 259.5t-115.5 248.5-184.5 210.5-258 146-323 54.5q-271 0-496-145 35 4 78 4 225 0 401-138-105-2-188-64.5t-114-159.5q33 5 61 5 43 0 85-11-112-23-185.5-111.5t-73.5-205.5v-4q68 38 146 41-66-44-105-115t-39-154q0-88 44-163 121 149 294.5 238.5t371.5 99.5q-8-38-8-74 0-134 94.5-228.5t228.5-94.5q140 0 236 102 109-21 205-78-37 115-142 178 93-10 186-50z"/></svg>
+                        
+                        Tweet
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </main>
+{% endblock content %}
