@@ -1,33 +1,29 @@
 {% extends "default.html" %}
 
 {% block content %}
-    <main role="main" class="container px-4 py-4 sm:py-8">
-        {% for post in posts | reverse | slice(end=7) %}
-        <div class="mb-16">
-            <h2 class="text-xl sm:text-2xl mb-4 -pt-1 flex flex-col sm:flex-row justify-between sm:items-baseline">
-                <a href="{{ post.url }}" class="mb-2 sm:mb-0 no-underline hover:underline text-grey-darkest">
+    <main role="main" class="container space-y-12">
+        {% for post in posts | reverse %}
+        <div class="space-y-2">
+            <h2 class="flex flex-col space-y-2">
+                <span class="title-date">
+                    {% if post.lang == "en" %}
+                        {{ post.date_en }}
+                    {% else %}
+                        Le {{ post.date_fr }}
+                    {% endif %}
+                </span>
+                <a href="{{ post.url }}" class="title hover:underline">
                     {{ post.title }}
                 </a>
-                <span class="text-base text-grey-dark whitespace-no-wrap">
-                    {{ post.date_en }}
-                </span>
             </h2>
             
-            <div class="content">
+            {% if loop.index < 20 %}
+            <div class="prose">
                 {% if post.description %}
                     {{ post.description }}
                 {% endif %}
             </div>
-        </div>
-        {% endfor %}
-        {% for post in posts | reverse | slice(start=7) %}
-        <div class="mb-16">
-            <h2 class="text-xl sm:text-2xl mb-4 -pt-1 flex flex-col sm:flex-row justify-between">
-                <a href="{{ post.url }}" class="no-underline hover:underline text-grey-darkest">{{ post.title }}</a>
-                <span class="text-base text-grey-dark whitespace-no-wrap">
-                    {{ post.date_en }}
-                </span>
-            </h2>
+            {% endif %}
         </div>
         {% endfor %}
     </main>

@@ -3,6 +3,7 @@ title: "Your app doesn't have \"users\""
 image: /images/your-app-doesnt-have-users.png
 thumbnail: /images/thumbnail-your-app-doesnt-have-users.png
 description: The most important part of your code is how you're naming things. Don't forget your first class!
+lang: en
 ---
 
 I'm a big fan of Laravel. The thing I like the most about the community is the focus on understandable code. Not patterns, not architectures, but how to choose the best API for a task so the result is readable as plain English.

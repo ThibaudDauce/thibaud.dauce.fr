@@ -4,6 +4,7 @@ image: /images/migrations-subdirectories.png
 thumbnail: /images/thumbnail-migrations-subdirectories.png
 code: https://framagit.org/ThibaudDauce/laravel-recursive-migrations
 description: This package allows to put Laravel migrations into sub-directories. Let's build it together!
+lang: en
 ---
 
 I'm currently developing the [Quantic Telecom](https://www.quantic-telecom.net) website with Laravel. My `app` folder is well-organized as my `views` and my `resources` but not my migrations because the Laravel `php artisan migrate` command doesn't run nested migrations. My package [`thibaud-dauce/laravel-recursive-migrations`](https://framagit.org/ThibaudDauce/laravel-recursive-migrations) will allow us to put migrations into sub-directories.

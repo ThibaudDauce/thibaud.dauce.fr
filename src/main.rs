@@ -31,6 +31,8 @@ struct Content {
     date_en: String,
     date_rss: String,
 
+    lang: String,
+
     slides: Option<String>,
     video: Option<String>,
     tweet: Option<String>,
@@ -42,6 +44,7 @@ fn main() {
     fs::remove_dir_all("./build/talks").ok();
     fs::remove_dir_all("./build/traces").ok();
     fs::remove_dir_all("./build/videos").ok();
+    fs::remove_dir_all("./build/css/files").ok();
 
     let posts = get_contents("posts");
     let talks = get_contents("talks");
@@ -190,6 +193,7 @@ fn main() {
     copy_dir("./content/videos", "./build/videos").unwrap();
     copy_dir("./content/traces", "./build/traces").unwrap();
     copy_dir("./content/talks", "./build/talks").unwrap();
+    copy_dir("./node_modules/typeface-merriweather/files", "./build/css/files").unwrap();
 }
 
 fn get_contents(directory: &str) -> Vec<Content> {
@@ -216,6 +220,7 @@ fn get_content(prefix: &str, path: &Path) -> Content {
 
     let mut options = Options::empty();
     options.insert(Options::ENABLE_STRIKETHROUGH);
+    options.insert(Options::ENABLE_TABLES);
     let parser = Parser::new_ext(&markdown, options);
 
     // Write to String buffer.
@@ -245,6 +250,8 @@ fn get_content(prefix: &str, path: &Path) -> Content {
         date_fr: format!("{} {} {}", date[2].trim_matches('0'), french_months(date[1]), date[0]),
         date_en: format!("{} {}, {}", english_months(date[1]), date[2].trim_matches('0'), date[0]),
         date_rss: Utc.ymd(date[0].parse().unwrap(), date[1].trim_matches('0').parse().unwrap(), date[2].trim_matches('0').parse().unwrap()).and_hms(0, 0, 0).to_rfc2822(),
+
+        lang: metadata["lang"].as_str().unwrap_or("fr").to_string(),
 
         slides: metadata["slides"].as_str().map(|s| s.to_string()),
         video: metadata["video"].as_str().map(|s| s.to_string()),

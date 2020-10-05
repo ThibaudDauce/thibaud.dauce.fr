@@ -1,6 +1,7 @@
 ---
 title: "UX fails: moving elements"
 video: /videos/ux-fails-twitter.ogv
+lang: en
 ---
 
 What's UX? UX stands for User Experience. It refers to "a person's emotions and attitudes about using a particular product, system or service" according to [Wikipedia](https://en.wikipedia.org/wiki/User_experience). I'm starting today a series of blog posts about UX and some fails I ran into on software I use every day.

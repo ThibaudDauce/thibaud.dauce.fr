@@ -1,13 +1,14 @@
 {
     "private": true,
     "scripts": {
-        "watch": "NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "prod": "NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+        "watch": "node_modules/.bin/postcss -c content/css/postcss.config.js -o build/css/app.css content/css/app.css --watch --verbose",
+        "prod": "NODE_ENV=production node_modules/.bin/postcss -c content/css/postcss.config.js -o build/css/app.css content/css/app.css --verbose"
     },
     "dependencies": {
-        "laravel-mix": "^4.0.16",
-        "laravel-mix-purgecss": "^4.1.0",
-        "tailwindcss": "^0.7.4",
+        "@tailwindcss/typography": "^0.2.0",
+        "postcss-cli": "^8.0.0",
+        "postcss-import": "^12.0.1",
+        "tailwindcss": "^1.8",
         "typeface-merriweather": "0.0.72"
     }
 }

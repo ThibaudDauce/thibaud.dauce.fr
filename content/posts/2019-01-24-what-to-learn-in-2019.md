@@ -1,6 +1,7 @@
 ---
 title: "What to learn in 2019?"
 description: "In 2019, I want to challenge the way I build applications by exploring other interesting technologies."
+lang: en
 ---
 
 Computer science is evolving at a rapid pace. There are new developers bringing new ideas. And there are many ancient discoveries forgotten or underused today. The fact is: there is a lot to learn in computer science in 2019. 

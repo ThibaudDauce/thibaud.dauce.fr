@@ -4,6 +4,7 @@ image: /images/pattern-matching.png
 thumbnail: /images/thumbnail-pattern-matching.png
 code: https://gitlab.com/thibauddauce/pattern-matching
 description: How to build a pattern matching library in PHP?
+lang: en
 ---
 
 I'm a big fan of Haskell and one of my favorite feature of this awesome language is pattern matching. If you don't know what's pattern matching, it's this:

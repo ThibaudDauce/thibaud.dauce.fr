@@ -2,6 +2,7 @@
 title: 4 lines to break a password in Haskell
 image: /images/hacker.jpg
 thumbnail: /images/thumbnail-hacker.jpg
+lang: en
 ---
 
 I'm relatively new in functional programming but I really enjoy trying to code some piece of software in Haskell. It's a pure, strongly type and efficient language. I tried to develop [a little program](https://github.com/ThibaudDauce/habreaker) to break SHA1 hashes and the code in only 4 lines long.

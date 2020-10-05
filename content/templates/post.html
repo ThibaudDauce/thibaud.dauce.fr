@@ -2,12 +2,16 @@
 
 {% block content %}
 
-<main role="main" class="container px-4 py-4 sm:py-8">
-    <p class="mb-12 text-grey-dark italic">
-        Published {{ post.date_en }}
+<main role="main" class="container space-y-6">
+    <p class="text-sm text-gray-600 italic">
+        {% if post.lang == "en" %}
+            Published {{ post.date_en }}
+        {% else %}
+            Publié le {{ post.date_fr }}
+        {% endif %}
     </p>
 
-    <div class="content">
+    <div class="prose">
         {{ post.html | safe }}
     </div>
 </main>

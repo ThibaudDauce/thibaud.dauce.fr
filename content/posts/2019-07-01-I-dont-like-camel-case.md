@@ -1,6 +1,7 @@
 ---
 title: "I don't like camelCase"
 description: "Snake case, camel case… Why different languages made different choices?"
+lang: en
 ---
 
 Which one is the most readable?

@@ -18,53 +18,39 @@
         <meta property="og:description" content="$description$">
     {% endif %}
 </head>
-<body class="overflow-x-hidden bg-grey-lightest text-black font-serif leading-normal min-h-screen flex flex-col">
-    <header class="container py-6 sm:py-12 px-4">
-        {% if subtitle %}
-            <h2 class="text-lg sm:text-xl font-normal mb-2">
-                <a href="/" class="no-underline text-black">{{ subtitle }}</a>
-            </h2>
-        {% endif %}
-        <h1 class="text-2xl sm:text-4xl font-normal mb-4">{{ title }}</h1>
-        <nav class="flex items-center">
-            {% if blog %}
-                <a href="/" class="no-underline font-semibold text-black">Blog</a>
-            {% else %}
-                <a href="/" class="no-underline font-semibold text-grey-darker hover:text-black">Blog</a>
+<body class="overflow-x-hidden bg-gray-100 text-black font-serif leading-normal min-h-screen flex flex-col py-6 sm:py-12">
+    <header class="container mb-12 space-y-4">
+        <div>
+            {% if subtitle %}
+                <h2 class="sm:text-lg font-normal">
+                    <a href="/" class="text-black">{{ subtitle }}</a>
+                </h2>
             {% endif %}
+            <h1 class="text-xl sm:text-2xl font-normal">{{ title }}</h1>
+        </div>
+        <nav class="flex items-center space-x-3 text-sm sm:text-base leading-none">
+            <a href="/" class="font-semibold {% if blog %} text-black {% else %} text-gray-600 hover:text-black {% endif %}">Blog</a>
             
-            <span class="mt-1 mx-3 text-4xl text-grey-darker select-none">&middot;</span>
+            <span class="hidden sm:inline h-1 w-1 rounded-full bg-gray-500"></span>
             
-            {% if talks %}
-                <a href="/talks.html" class="no-underline font-semibold text-black">Conférences</a>
-            {% else %}
-                <a href="/talks.html" class="no-underline font-semibold text-grey-darker hover:text-black">Conférences</a>
-            {% endif %}
+            <a href="/talks.html" class="font-semibold {% if talks %} text-black {% else %} text-gray-600 hover:text-black {% endif %}">Conférences</a>
             
-            <span class="mt-1 mx-3 text-4xl text-grey-darker select-none">&middot;</span>
+            <span class="hidden sm:inline h-1 w-1 rounded-full bg-gray-500"></span>
             
-            {% if hiking %}
-                <a href="/hiking.html" class="no-underline font-semibold text-black">Randonnées</a>
-            {% else %}
-                <a href="/hiking.html" class="no-underline font-semibold text-grey-darker hover:text-black">Randonnées</a>
-            {% endif %}
+            <a href="https://www.youtube.com/user/tdauce/" class="font-semibold text-gray-600 hover:text-black">Vidéos</a>
             
-            <span class="mt-1 mx-3 text-4xl text-grey-darker select-none">&middot;</span>
+            <span class="hidden sm:inline h-1 w-1 rounded-full bg-gray-500"></span>
             
-            {% if about %}
-                <a href="/about.html" class="no-underline font-semibold text-black">À propos</a>
-            {% else %}
-                <a href="/about.html" class="no-underline font-semibold text-grey-darker hover:text-black">À propos</a>
-            {% endif %}
+            <a href="/about.html" class="font-semibold {% if about %} text-black {% else %} text-gray-600 hover:text-black {% endif %}">À propos</a>
         </nav>
     </header>
     
     {% block content %}
     {% endblock content %}
     
-    <footer class="container text-center px-4 py-12 mt-12 text-sm text-grey-darker">
+    <footer class="container text-center px-4 py-12 mt-12 text-sm text-gray-800">
         <p>
-            Ce blog est statiquement généré en Rust. Si vous trouvez une faute ou un problème, <a href="https://github.com/ThibaudDauce/thibaud.dauce.fr" class="text-indigo">vous pouvez contribuer via Github</a>.
+            Ce blog est généré statiquement en Rust. Si vous trouvez une faute ou un problème, <a href="https://github.com/ThibaudDauce/thibaud.dauce.fr" class="text-indigo-600 italic">vous pouvez contribuer via Github</a>.
         </p>
     </footer>
 </body>

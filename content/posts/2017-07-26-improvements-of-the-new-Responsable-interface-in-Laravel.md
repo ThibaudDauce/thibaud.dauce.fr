@@ -3,6 +3,7 @@ title: "Improvements of the new Responsable interface in Laravel"
 image: /images/responsable.png
 thumbnail: /images/thumbnail-responsable.png
 description: "Laravel 5.5 will ship with a new feature: the Responsable interface. Why not add some sugar to it?"
+lang: en
 ---
 
 The new `Responsable` interface in Laravel is really awesome, it allows us to simplify our controllers with custom responses objects.
@@ -61,8 +62,6 @@ Not too bad, thanks to the awesome `wantsJson()` method, but it could be better 
 public function index()
 {
     $users = User::all();
-
-    // … Lots of really complicated stuff
 
     return UsersResponse($users);
 }

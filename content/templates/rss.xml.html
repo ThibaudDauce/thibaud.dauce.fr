@@ -9,7 +9,7 @@
         <lastBuildDate>{{ latest_post.date_rss }}</lastBuildDate>
         {% for post in posts | reverse %}
             <item>
-                <title><![CDATA[{{ post.title|safe }}]]</title>
+                <title><![CDATA[{{ post.title|safe }}]]></title>
                 <link>https://thibaud.dauce.fr{{ post.url|safe }}</link>
                 <description><![CDATA[{{ post.html|safe }}]]></description>
                 <pubDate>{{ post.date_rss }}</pubDate>
