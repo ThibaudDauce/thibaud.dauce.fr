@@ -1,6 +1,5 @@
 use tera::Tera;
 use tera::Context;
-use std::process::exit;
 use std::fs;
 use std::path::Path;
 use pulldown_cmark::{Parser, Options, html};
@@ -25,7 +24,6 @@ struct Content {
     
     markdown: String,
     html: String,
-    // html_preview: String,
 
     date_fr: String,
     date_en: String,
@@ -53,13 +51,7 @@ fn main() {
         .collect();
     traces.sort();
 
-    let tera = match Tera::new("content/templates/**/*.html") {
-        Ok(t) => t,
-        Err(e) => {
-            println!("Parsing error(s): {}", e);
-            exit(1);
-        }
-    };
+    let tera = Tera::new("content/templates/**/*.html").unwrap_or_else(|e| panic!("Parsing error(s): {}", e));
 
     fs::create_dir("./build/posts").unwrap();
     let markdown_regexp = Regex::new(r#"```([a-z]*)\n((.|\s)*?)\n```"#).unwrap();
@@ -97,11 +89,14 @@ fn main() {
 
             let mut code = code_in_markdown.as_str().to_string();
             let mut without_php_opening = false;
+
+            // Add fake opening PHP tags if missing
             if !code.starts_with("<?php") && lang == "php" {
                 without_php_opening = true;
                 code = format!("<?php\n{}", code);
             }
 
+            // Add fake module opening if lang is Haskell
             if lang == "hs" {
                 code = format!("module Example where\n\n{}", code);
             } 
@@ -117,38 +112,9 @@ fn main() {
                 output_html.replace_range(..end_of_first_line, "");
             }
 
-            // let new_html = LinesWithEndings::from(code_in_markdown.as_str()).map(|line| {
-            //     let ranges: Vec<(Style, &str)> = h.highlight(line, &ps);
-
-            //     ranges.iter()
-            //         .filter(|range| range.1 != "")
-            //         .map(|range| {
-            //             format!(r#"<span style="color: rgba({}, {}, {}, {})">{}</span>"#, range.0.foreground.r, range.0.foreground.g, range.0.foreground.b, range.0.foreground.a, range.1)
-            //         })
-            //         .collect::<Vec<String>>()
-            //         .join("")
-            // }).collect::<Vec<String>>().join("\n");
-
             let range = code_in_html.range();
             post_html.replace_range(range, &output_html);
         }
-
-        // for found in markdown_regexp.captures_iter(&post.markdown.clone()) {
-        //     if found.get(1).unwrap().as_str() == "" {
-        //         continue;
-        //     }
-        //     // dbg!(found.get(1).unwrap().as_str());
-
-        //     let code = found.get(2).unwrap();
-
-        //     // dbg!(&code.as_str());
-
-
-
-
-
-        //     // post_html.replace_range(code.range(), &new_html);
-        // }
 
         fs::write(format!("./build{}", post.url), post_html).unwrap();
     }
@@ -223,20 +189,8 @@ fn get_content(prefix: &str, path: &Path) -> Content {
     options.insert(Options::ENABLE_TABLES);
     let parser = Parser::new_ext(&markdown, options);
 
-    // Write to String buffer.
     let mut html = String::new();
     html::push_html(&mut html, parser);
-
-    // let event_offsets: Vec<_> = Parser::new(&markdown)
-    //     .into_offset_iter()
-    //     .map(|event_and_range| {
-    //         dbg!(&event_and_range);
-    //         event_and_range.1
-    //     })
-    //     .collect();
-
-    // let more_split: Vec<&str> = html.split("<!--more-->").collect();
-    // let html_preview = more_split[0].to_string();
 
     Content {
         filename: filename.clone(),
@@ -245,7 +199,6 @@ fn get_content(prefix: &str, path: &Path) -> Content {
         description: metadata["description"].as_str().unwrap_or("").to_string(),
         markdown: markdown,
         html: html,
-        // html_preview: html_preview,
 
         date_fr: format!("{} {} {}", date[2].trim_matches('0'), french_months(date[1]), date[0]),
         date_en: format!("{} {}, {}", english_months(date[1]), date[2].trim_matches('0'), date[0]),
