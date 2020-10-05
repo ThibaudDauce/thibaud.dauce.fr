@@ -53,7 +53,10 @@ fn main() {
 
     let tera = Tera::new("content/templates/**/*.html").unwrap_or_else(|e| panic!("Parsing error(s): {}", e));
 
-    fs::create_dir("./build/posts").unwrap();
+    fs::create_dir("./build").ok();
+    fs::create_dir("./build/css").ok();
+    fs::create_dir("./build/posts").ok();
+
     let markdown_regexp = Regex::new(r#"```([a-z]*)\n((.|\s)*?)\n```"#).unwrap();
     let html_regexp = Regex::new(r#"<pre><code( class="language-([a-z]*)")?>((.|\s)*?)</code></pre>"#).unwrap();
     let ps = SyntaxSet::load_defaults_newlines();
