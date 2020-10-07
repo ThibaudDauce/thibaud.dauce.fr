@@ -70,8 +70,8 @@ fn main() {
         let mut context = Context::new();
         context.insert("post", &post);
         context.insert("title", &post.title);
-        context.insert("subtitle", "Thibaud Dauce");
         context.insert("blog", &true);
+        context.insert("description", &post.description);
         let mut post_html = tera.render("post.html", &context).unwrap();
 
         let number_of_codes = markdown_regexp.captures_iter(&post.markdown).count();
@@ -125,7 +125,6 @@ fn main() {
     let mut context = Context::new();
     context.insert("posts", &posts);
     context.insert("title", "Mes derniers articles");
-    context.insert("subtitle", "Thibaud Dauce");
     context.insert("blog", &true);
     let index = tera.render("index.html", &context).unwrap();
     fs::write("build/index.html", index).unwrap();
@@ -138,21 +137,18 @@ fn main() {
 
     let mut context = Context::new();
     context.insert("title", "À propos");
-    context.insert("subtitle", "Thibaud Dauce");
     context.insert("about", &true);
     let about = tera.render("about.html", &context).unwrap();
     fs::write("build/about.html", about).unwrap();
 
     let mut context = Context::new();
     context.insert("title", "Mes dernières conférences");
-    context.insert("subtitle", "Thibaud Dauce");
     context.insert("talks", &talks);
     let talks = tera.render("talks.html", &context).unwrap();
     fs::write("build/talks.html", talks).unwrap();
 
     let mut context = Context::new();
     context.insert("title", "Mes dernières randonnées");
-    context.insert("subtitle", "Thibaud Dauce");
     context.insert("traces", &traces);
     context.insert("hiking", &true);
     let hiking = tera.render("hiking.html", &context).unwrap();
