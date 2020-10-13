@@ -2,10 +2,11 @@
     "private": true,
     "scripts": {
         "watch": "node_modules/.bin/postcss -c content/css/postcss.config.js -o build/css/app.css content/css/app.css --watch --verbose",
-        "prod": "NODE_ENV=production node_modules/.bin/postcss -c content/css/postcss.config.js -o build/css/app.css content/css/app.css --verbose"
+        "prod": "cross-env NODE_ENV=production node_modules/.bin/postcss -c content/css/postcss.config.js -o build/css/app.css content/css/app.css --verbose"
     },
     "dependencies": {
         "@tailwindcss/typography": "^0.2.0",
+        "cross-env": "^7.0.2",
         "postcss-cli": "^8.0.0",
         "postcss-import": "^12.0.1",
         "tailwindcss": "^1.8",
