@@ -25,6 +25,7 @@ struct Content {
     markdown: String,
     html: String,
 
+    date: chrono::DateTime<Utc>,
     date_fr: String,
     date_en: String,
     date_rss: String,
@@ -44,7 +45,7 @@ fn main() {
     fs::remove_dir_all("./build/videos").ok();
     fs::remove_dir_all("./build/css/files").ok();
 
-    let posts = get_contents("posts");
+    let mut posts = get_contents("posts");
     let talks = get_contents("talks");
     let mut traces: Vec<String> = fs::read_dir("content/traces").unwrap()
         .map(|maybe_path| maybe_path.unwrap().path().file_name().unwrap().to_str().unwrap().to_string())
@@ -121,6 +122,9 @@ fn main() {
 
         fs::write(format!("./build{}", post.url), post_html).unwrap();
     }
+
+
+    posts = posts.into_iter().filter(|post| post.date < chrono::Utc::now()).collect();
 
     let mut context = Context::new();
     context.insert("posts", &posts);
@@ -199,9 +203,10 @@ fn get_content(prefix: &str, path: &Path) -> Content {
         markdown: markdown,
         html: html,
 
-        date_fr: format!("{} {} {}", date[2].trim_matches('0'), french_months(date[1]), date[0]),
-        date_en: format!("{} {}, {}", english_months(date[1]), date[2].trim_matches('0'), date[0]),
-        date_rss: Utc.ymd(date[0].parse().unwrap(), date[1].trim_matches('0').parse().unwrap(), date[2].trim_matches('0').parse().unwrap()).and_hms(0, 0, 0).to_rfc2822(),
+        date: Utc.ymd(date[0].parse().unwrap(), date[1].trim_start_matches('0').parse().unwrap(), date[2].trim_start_matches('0').parse().unwrap()).and_hms(0, 0, 0),
+        date_fr: format!("{} {} {}", date[2].trim_start_matches('0'), french_months(date[1]), date[0]),
+        date_en: format!("{} {}, {}", english_months(date[1]), date[2].trim_start_matches('0'), date[0]),
+        date_rss: Utc.ymd(date[0].parse().unwrap(), date[1].trim_start_matches('0').parse().unwrap(), date[2].trim_start_matches('0').parse().unwrap()).and_hms(0, 0, 0).to_rfc2822(),
 
         lang: metadata["lang"].as_str().unwrap_or("fr").to_string(),
 

@@ -14,4 +14,4 @@ copy_dir = "0.1.2"
 yaml-rust = "0.4.4"
 syntect = "4.4"
 regex = "1"
-chrono = "0.4.19"
+chrono = { version = "0.4", features = ["serde"] }
