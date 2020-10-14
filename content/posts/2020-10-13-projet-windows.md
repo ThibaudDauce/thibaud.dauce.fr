@@ -33,7 +33,7 @@ Après avoir installé mon ordinateur et développé une journée avec, voici me
 
 Au niveau des problèmes rencontrés :
 - Certains texte de Windows lors des redémarrages pour les mises à jour sont en anglais, incompréhensible… La date et l'heure étaient également en format anglais alors que ma configuration était en français.
-- La configuration de mon clavier Bépo n'était pas la même que sous Linux, mais un article arrive très vite pour expliquer tout ça !
+- La configuration de mon clavier Bépo n'était pas la même que sous Linux, mais [j'ai pu corriger ce problème via quelques recherches](/posts/2020-10-14-bépo-sur-windows.html)
 - Redis n'existe pas en version Windows (du moins pas depuis la version 3)
 - Je n'ai pas trouvé d'alternative à `rsync` pour le moment
 - L'application Mail n'arrive pas à se connecter à ProtonMail Bridge et ne propose visiblement pas d'identités multiples pour pouvoir envoyer des mails avec différentes adresses via le même compte SMTP. J'ai installé Thunderbird.
