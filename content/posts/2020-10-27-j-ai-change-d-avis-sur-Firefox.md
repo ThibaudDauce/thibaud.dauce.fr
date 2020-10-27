@@ -1,9 +1,9 @@
 ---
 title: "J'ai changé d'avis sur Firefox"
-description: "Pendant longtemps j'ai promu Firefox et débattu pour mettre fin au monopôle de Chrome. J'avais tort."
+description: "Pendant longtemps j'ai promu Firefox et débattu pour mettre fin au monopole de Chrome. J'avais tort."
 ---
 
-Pendant longtemps j'ai débattu pour mettre fin au monopôle de Chrome et encourager les personnes autour de moi à utiliser un navigateur autre tel que Firefox : « Le web doit rester ouvert, si tout le monde utilise Chrome, les développeurs de Google auront la possibilité de contrôler les spécifications ». Cette affirmation reste correcte aujourd'hui mais je ne pense pas que ça soit une mauvaise chose.
+Pendant longtemps j'ai débattu pour mettre fin au monopole de Chrome et encourager les personnes autour de moi à utiliser un navigateur autre tel que Firefox : « Le web doit rester ouvert, si tout le monde utilise Chrome, les développeurs de Google auront la possibilité de contrôler les spécifications ». Cette affirmation reste correcte aujourd'hui mais je ne pense pas que ça soit une mauvaise chose.
 
 Beaucoup de personnes pensent que le web est le seul écosystème à permettre un développement multi-plateforme ce qui est complètement faux. Le contre-exemple le plus connu est Java, mais tous les langages basés sur une machine virtuelle qui elle-même est développée sur plusieurs plateformes le permette. Lorsque j'ai commencé à considérer le web comme une machine virtuelle, mon avis a changé.
 
