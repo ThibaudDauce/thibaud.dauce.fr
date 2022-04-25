@@ -1,42 +1,41 @@
 {% extends "default.html" %}
 
 {% block content %}
-    <div id="map" class="w-full " style="height: 50rem"></div>
+<div id="map" class="w-full " style="height: 50rem"></div>
 
-    <script src='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.js'></script>
-    <link href='https://api.mapbox.com/mapbox.js/v3.0.1/mapbox.css' rel='stylesheet' />
-    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js'></script>
-    <script>
-    L.mapbox.accessToken = 'pk.eyJ1IjoidGhpYmF1ZGRhdWNlIiwiYSI6ImNqMHdpNXNiYjAwMTkzMm1vbWpwb2p6czkifQ.bxPv6_pQ9eucWIDMdyBygg';
-    var map = L.mapbox.map('map', 'mapbox.streets');
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-gpx/1.7.0/gpx.min.js"></script>
+<script>
+    var map = L.map('map').setView(new L.LatLng(46.498, 2.197), 7);
 
-    // omnivore will AJAX-request this file behind the scenes and parse it:
-    // note that there are considerations:
-    // - The file must either be on the same domain as the page that requests it,
-    //   or both the server it is requested from and the user's browser must
-    //   support CORS.
+    var googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+    }).addTo(map);
 
-    map.setView(new L.LatLng(46.498, 2.197), 7);
+    function loadGPX(traces) {
+        traces.forEach(function (trace) {
+            console.log(trace);
+            new L.GPX('/traces/' + trace, {
+                async: true, marker_options: {
+                    iconSize: [11, 15],
+                    shadowSize: [16.6, 16.6],
+                    iconAnchor: [5.3, 15],
+                    shadowAnchor: [5.3, 15.6],
+                    startIconUrl: '/images/pin-icon-start.png',
+                    endIconUrl: '/images/pin-icon-end.png',
+                    shadowUrl: '/images/pin-shadow.png',
 
-    var customLayer = L.geoJson(null, {
-        // http://leafletjs.com/reference.html#geojson-style
-        style: function(feature) {
-            return { color: '#FC6E51' };
-        }
-    });
-
-    function loadGPX(traces)
-    {
-        traces.forEach(function(trace) {
-            omnivore.gpx('/traces/' + trace, null, customLayer)
-                .addTo(map);
+                }
+            }).addTo(map)
         });
     }
 
     loadGPX([
         {% for trace in traces %}
-            '{{ trace }}',
+    '{{ trace }}',
         {% endfor %}
     ])
-    </script>
+</script>
 {% endblock content %}
