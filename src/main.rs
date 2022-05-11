@@ -1,18 +1,19 @@
-use tera::Tera;
-use tera::Context;
+use chrono::prelude::*;
+use copy_dir::copy_dir;
+use pulldown_cmark::{html, Options, Parser};
+use regex::Regex;
+use serde::Serialize;
 use std::fs;
 use std::path::Path;
-use pulldown_cmark::{Parser, Options, html};
-use serde::Serialize;
-use copy_dir::copy_dir;
-use yaml_rust::YamlLoader;
-use syntect::parsing::SyntaxSet;
+use std::time::Instant;
 use syntect::highlighting::ThemeSet;
-use syntect::html::ClassedHTMLGenerator;
-use regex::Regex;
-use syntect::html::ClassStyle;
 use syntect::html::css_for_theme_with_class_style;
-use chrono::prelude::*;
+use syntect::html::ClassStyle;
+use syntect::html::ClassedHTMLGenerator;
+use syntect::parsing::SyntaxSet;
+use tera::Context;
+use tera::Tera;
+use yaml_rust::YamlLoader;
 
 #[derive(Serialize, Debug)]
 struct Content {
@@ -21,7 +22,7 @@ struct Content {
 
     title: String,
     description: String,
-    
+
     markdown: String,
     html: String,
 
@@ -38,6 +39,8 @@ struct Content {
 }
 
 fn main() {
+    let start = Instant::now();
+
     fs::remove_dir_all("./build/posts").ok();
     fs::remove_dir_all("./build/images").ok();
     fs::remove_dir_all("./build/talks").ok();
@@ -47,24 +50,37 @@ fn main() {
 
     let mut posts = get_contents("posts");
     let talks = get_contents("talks");
-    let mut traces: Vec<String> = fs::read_dir("content/traces").unwrap()
-        .map(|maybe_path| maybe_path.unwrap().path().file_name().unwrap().to_str().unwrap().to_string())
+    let mut traces: Vec<String> = fs::read_dir("content/traces")
+        .unwrap()
+        .map(|maybe_path| {
+            maybe_path
+                .unwrap()
+                .path()
+                .file_name()
+                .unwrap()
+                .to_str()
+                .unwrap()
+                .to_string()
+        })
         .collect();
     traces.sort();
 
-    let tera = Tera::new("content/templates/**/*.html").unwrap_or_else(|e| panic!("Parsing error(s): {}", e));
+    let tera = Tera::new("content/templates/**/*.html")
+        .unwrap_or_else(|e| panic!("Parsing error(s): {}", e));
 
     fs::create_dir("./build").ok();
     fs::create_dir("./build/css").ok();
     fs::create_dir("./build/posts").ok();
 
     let markdown_regexp = Regex::new(r#"```([a-z]*)\n((.|\s)*?)\n```"#).unwrap();
-    let html_regexp = Regex::new(r#"<pre><code( class="language-([a-z]*)")?>((.|\s)*?)</code></pre>"#).unwrap();
+    let html_regexp =
+        Regex::new(r#"<pre><code( class="language-([a-z]*)")?>((.|\s)*?)</code></pre>"#).unwrap();
     let ps = SyntaxSet::load_defaults_newlines();
 
     let theme = ThemeSet::get_theme("./content/css/verdandi.tmTheme").unwrap();
 
-    let css = css_for_theme_with_class_style(&theme, ClassStyle::SpacedPrefixed { prefix: "syntect" });
+    let css =
+        css_for_theme_with_class_style(&theme, ClassStyle::SpacedPrefixed { prefix: "syntect" });
     fs::write("./content/css/syntax.css", css).unwrap();
 
     for post in &posts {
@@ -77,7 +93,10 @@ fn main() {
 
         let number_of_codes = markdown_regexp.captures_iter(&post.markdown).count();
         for i in 0..number_of_codes {
-            let found_in_markdown = markdown_regexp.captures_iter(&post.markdown).nth(i).unwrap();
+            let found_in_markdown = markdown_regexp
+                .captures_iter(&post.markdown)
+                .nth(i)
+                .unwrap();
             let found_in_html = html_regexp.captures_iter(&post_html).nth(i).unwrap();
 
             let lang = found_in_markdown.get(1).unwrap().as_str();
@@ -103,9 +122,13 @@ fn main() {
             // Add fake module opening if lang is Haskell
             if lang == "hs" {
                 code = format!("module Example where\n\n{}", code);
-            } 
+            }
 
-            let mut html_generator = ClassedHTMLGenerator::new_with_class_style(&syntax, &ps, ClassStyle::SpacedPrefixed { prefix: "syntect" });
+            let mut html_generator = ClassedHTMLGenerator::new_with_class_style(
+                &syntax,
+                &ps,
+                ClassStyle::SpacedPrefixed { prefix: "syntect" },
+            );
             for line in code.lines() {
                 html_generator.parse_html_for_line(&line);
             }
@@ -123,8 +146,10 @@ fn main() {
         fs::write(format!("./build{}", post.url), post_html).unwrap();
     }
 
-
-    posts = posts.into_iter().filter(|post| post.date < chrono::Utc::now()).collect();
+    posts = posts
+        .into_iter()
+        .filter(|post| post.date < chrono::Utc::now())
+        .collect();
 
     let mut context = Context::new();
     context.insert("posts", &posts);
@@ -162,11 +187,18 @@ fn main() {
     copy_dir("./content/videos", "./build/videos").unwrap();
     copy_dir("./content/traces", "./build/traces").unwrap();
     copy_dir("./content/talks", "./build/talks").unwrap();
-    copy_dir("./node_modules/typeface-merriweather/files", "./build/css/files").unwrap();
+    copy_dir(
+        "./node_modules/typeface-merriweather/files",
+        "./build/css/files",
+    )
+    .unwrap();
+
+    println!("End of build: {:?}", start.elapsed());
 }
 
 fn get_contents(directory: &str) -> Vec<Content> {
-    let mut contents: Vec<Content> = fs::read_dir(format!("content/{}", directory)).unwrap()
+    let mut contents: Vec<Content> = fs::read_dir(format!("content/{}", directory))
+        .unwrap()
         .map(|maybe_path| maybe_path.unwrap().path())
         .filter(|path| path.is_file())
         .map(|path| get_content(directory, &path))
@@ -179,7 +211,7 @@ fn get_content(prefix: &str, path: &Path) -> Content {
     let filename = path.file_name().unwrap().to_str().unwrap().to_string();
 
     let date: Vec<&str> = filename.split("-").collect();
-  
+
     let content = fs::read_to_string(path.clone()).unwrap();
     let mut blocks: Vec<&str> = content.split("---").collect();
     blocks.remove(0); // remove first ---
@@ -203,10 +235,33 @@ fn get_content(prefix: &str, path: &Path) -> Content {
         markdown: markdown,
         html: html,
 
-        date: Utc.ymd(date[0].parse().unwrap(), date[1].trim_start_matches('0').parse().unwrap(), date[2].trim_start_matches('0').parse().unwrap()).and_hms(0, 0, 0),
-        date_fr: format!("{} {} {}", date[2].trim_start_matches('0'), french_months(date[1]), date[0]),
-        date_en: format!("{} {}, {}", english_months(date[1]), date[2].trim_start_matches('0'), date[0]),
-        date_rss: Utc.ymd(date[0].parse().unwrap(), date[1].trim_start_matches('0').parse().unwrap(), date[2].trim_start_matches('0').parse().unwrap()).and_hms(0, 0, 0).to_rfc2822(),
+        date: Utc
+            .ymd(
+                date[0].parse().unwrap(),
+                date[1].trim_start_matches('0').parse().unwrap(),
+                date[2].trim_start_matches('0').parse().unwrap(),
+            )
+            .and_hms(0, 0, 0),
+        date_fr: format!(
+            "{} {} {}",
+            date[2].trim_start_matches('0'),
+            french_months(date[1]),
+            date[0]
+        ),
+        date_en: format!(
+            "{} {}, {}",
+            english_months(date[1]),
+            date[2].trim_start_matches('0'),
+            date[0]
+        ),
+        date_rss: Utc
+            .ymd(
+                date[0].parse().unwrap(),
+                date[1].trim_start_matches('0').parse().unwrap(),
+                date[2].trim_start_matches('0').parse().unwrap(),
+            )
+            .and_hms(0, 0, 0)
+            .to_rfc2822(),
 
         lang: metadata["lang"].as_str().unwrap_or("fr").to_string(),
 
@@ -216,38 +271,39 @@ fn get_content(prefix: &str, path: &Path) -> Content {
     }
 }
 
-
 fn french_months(month: &str) -> String {
     (match month {
-            "01" => "janvier",
-            "02" => "février",
-            "03" => "mars",
-            "04" => "avril",
-            "05" => "mai",
-            "06" => "juin",
-            "07" => "juillet",
-            "08" => "août",
-            "09" => "septembre",
-            "10" => "octobre",
-            "11" => "novembre",
-            "12" => "décembre",
-            _ => panic!(),
-        }).to_string()
+        "01" => "janvier",
+        "02" => "février",
+        "03" => "mars",
+        "04" => "avril",
+        "05" => "mai",
+        "06" => "juin",
+        "07" => "juillet",
+        "08" => "août",
+        "09" => "septembre",
+        "10" => "octobre",
+        "11" => "novembre",
+        "12" => "décembre",
+        _ => panic!(),
+    })
+    .to_string()
 }
 fn english_months(month: &str) -> String {
     (match month {
-            "01" => "January",
-            "02" => "February",
-            "03" => "March",
-            "04" => "April",
-            "05" => "May",
-            "06" => "June",
-            "07" => "July",
-            "08" => "August",
-            "09" => "September",
-            "10" => "Obctober",
-            "11" => "November",
-            "12" => "December",
-            _ => panic!(),
-        }).to_string()
+        "01" => "January",
+        "02" => "February",
+        "03" => "March",
+        "04" => "April",
+        "05" => "May",
+        "06" => "June",
+        "07" => "July",
+        "08" => "August",
+        "09" => "September",
+        "10" => "Obctober",
+        "11" => "November",
+        "12" => "December",
+        _ => panic!(),
+    })
+    .to_string()
 }
