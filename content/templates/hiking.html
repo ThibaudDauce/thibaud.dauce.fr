@@ -14,28 +14,33 @@
         subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
     }).addTo(map);
 
-    function loadGPX(traces) {
-        traces.forEach(function (trace) {
-            console.log(trace);
-            new L.GPX('/traces/' + trace, {
-                async: true, marker_options: {
-                    iconSize: [11, 15],
-                    shadowSize: [16.6, 16.6],
-                    iconAnchor: [5.3, 15],
-                    shadowAnchor: [5.3, 15.6],
-                    startIconUrl: '/images/pin-icon-start.png',
-                    endIconUrl: '/images/pin-icon-end.png',
-                    shadowUrl: '/images/pin-shadow.png',
-
-                }
-            }).addTo(map)
-        });
+    function loadGPX(trace, color, popup) {
+        new L.GPX('/traces/' + trace, {
+            async: true,
+            marker_options: {
+                iconSize: [11, 15],
+                shadowSize: [16.6, 16.6],
+                iconAnchor: [5.3, 15],
+                shadowAnchor: [5.3, 15.6],
+                startIconUrl: '/images/pin-icon-start.png',
+                endIconUrl: '/images/pin-icon-end.png',
+                shadowUrl: '/images/pin-shadow.png',
+            },
+            polyline_options: {
+                color: color,
+                opacity: 1,
+                weight: 4,
+                lineCap: 'round'
+            }
+        }).on('addpoint', function(e) {
+            e.target.bindPopup(popup)
+        }).addTo(map)
     }
 
-    loadGPX([
-        {% for trace in traces %}
-    '{{ trace }}',
+    {% for trip in trips %}
+        {% for trace in trip.traces %}
+            loadGPX('{{ trace.path | safe }}', '{{ trip.color }}', "<b>{{ trip.type_as_string }} {{ trip.name }} de {{ trip.date }}</b><br>Distance : {{ trip.distance_format }}<br>Dénivelé: +{{ trip.elevation_positive_format }} | -{{ trip.elevation_negative_format }}<br><br><b>Segment {{ trace.name }}</b><br>Distance : {{ trace.distance_format }}<br>Dénivelé: +{{ trace.elevation_positive_format }} | -{{ trace.elevation_negative_format }}");
         {% endfor %}
-    ])
+    {% endfor %}
 </script>
 {% endblock content %}

@@ -1,9 +1,14 @@
 use chrono::prelude::*;
 use copy_dir::copy_dir;
+use geoutils::Location;
+use gpx::read;
+use gpx::Waypoint;
 use pulldown_cmark::{html, Options, Parser};
 use regex::Regex;
 use serde::Serialize;
 use std::fs;
+use std::fs::File;
+use std::io::BufReader;
 use std::path::Path;
 use std::time::Instant;
 use syntect::highlighting::ThemeSet;
@@ -38,6 +43,40 @@ struct Content {
     tweet: Option<String>,
 }
 
+#[derive(Serialize, Debug, PartialEq, Clone, Copy)]
+enum TracesType {
+    Bike,
+    Hike,
+}
+
+#[derive(Serialize, Debug)]
+struct Trip {
+    r#type: TracesType,
+    type_as_string: &'static str,
+    color: &'static str,
+    date: String,
+    name: String,
+    distance: f64,
+    distance_format: String,
+    elevation_positive: f64,
+    elevation_positive_format: String,
+    elevation_negative: f64,
+    elevation_negative_format: String,
+    traces: Vec<Trace>,
+}
+
+#[derive(Serialize, Debug)]
+struct Trace {
+    path: String,
+    name: String,
+    distance: f64,
+    distance_format: String,
+    elevation_positive: f64,
+    elevation_positive_format: String,
+    elevation_negative: f64,
+    elevation_negative_format: String,
+}
+
 fn main() {
     let start = Instant::now();
 
@@ -50,20 +89,6 @@ fn main() {
 
     let mut posts = get_contents("posts");
     let talks = get_contents("talks");
-    let mut traces: Vec<String> = fs::read_dir("content/traces")
-        .unwrap()
-        .map(|maybe_path| {
-            maybe_path
-                .unwrap()
-                .path()
-                .file_name()
-                .unwrap()
-                .to_str()
-                .unwrap()
-                .to_string()
-        })
-        .collect();
-    traces.sort();
 
     let tera = Tera::new("content/templates/**/*.html")
         .unwrap_or_else(|e| panic!("Parsing error(s): {}", e));
@@ -108,7 +133,9 @@ fn main() {
             let code_in_markdown = found_in_markdown.get(2).unwrap();
             let code_in_html = found_in_html.get(3).unwrap();
 
-            let syntax = ps.find_syntax_by_extension(lang).unwrap();
+            let syntax = ps
+                .find_syntax_by_extension(lang)
+                .expect(&format!("Cannot find {lang}"));
 
             let mut code = code_in_markdown.as_str().to_string();
             let mut without_php_opening = false;
@@ -177,8 +204,9 @@ fn main() {
     fs::write("build/talks.html", talks).unwrap();
 
     let mut context = Context::new();
-    context.insert("title", "Mes dernières randonnées");
-    context.insert("traces", &traces);
+    context.insert("title", "Mes dernières randonnées à pied et à vélo");
+
+    context.insert("trips", &load_trips());
     context.insert("hiking", &true);
     let hiking = tera.render("hiking.html", &context).unwrap();
     fs::write("build/hiking.html", hiking).unwrap();
@@ -268,6 +296,159 @@ fn get_content(prefix: &str, path: &Path) -> Content {
         slides: metadata["slides"].as_str().map(|s| s.to_string()),
         video: metadata["video"].as_str().map(|s| s.to_string()),
         tweet: metadata["tweet"].as_str().map(|s| s.to_string()),
+    }
+}
+
+fn load_trips() -> Vec<Trip> {
+    let mut trips = vec![];
+
+    for trip_dir in fs::read_dir("content/traces").unwrap() {
+        let trip_dir = trip_dir.unwrap();
+        let trip_path = trip_dir.path();
+        let trip_filename = trip_path.file_name().unwrap().to_string_lossy();
+        let (date, name) = trip_filename.split_once(' ').unwrap();
+
+        let r#type = if name.ends_with("[bike]") {
+            TracesType::Bike
+        } else {
+            TracesType::Hike
+        };
+
+        // if r#type == TracesType::Hike {
+        //     continue;
+        // }
+
+        let (name, _) = name.split_once('[').unwrap();
+
+        let (year, month) = date.split_once('-').unwrap();
+
+        let mut trip = Trip {
+            r#type,
+            type_as_string: if r#type == TracesType::Bike {
+                "Vélo"
+            } else {
+                "Randonnée"
+            },
+            date: format!("{} {year}", french_months(month)),
+            color: if r#type == TracesType::Bike {
+                "#2563eb"
+            } else {
+                "#ea580c"
+            },
+            name: name.trim().to_string(),
+            distance: 0.0,
+            distance_format: "".to_string(),
+            elevation_negative: 0.0,
+            elevation_negative_format: "".to_string(),
+            elevation_positive: 0.0,
+            elevation_positive_format: "".to_string(),
+            traces: vec![],
+        };
+
+        for trace_dir in fs::read_dir(trip_dir.path()).unwrap() {
+            let trace_dir = trace_dir.unwrap();
+            let trace_filename = trace_dir.file_name();
+            let trace_filename_as_string = trace_filename.to_string_lossy().to_string();
+
+            let file = File::open(trace_dir.path()).unwrap();
+            let reader = BufReader::new(file);
+
+            let mut trace = Trace {
+                path: format!("{trip_filename}/{trace_filename_as_string}"),
+                name: trace_filename_as_string
+                    .strip_suffix(".gpx")
+                    .unwrap()
+                    .to_string(),
+                distance: 0.0,
+                distance_format: "".to_string(),
+                elevation_negative: 0.0,
+                elevation_negative_format: "".to_string(),
+                elevation_positive: 0.0,
+                elevation_positive_format: "".to_string(),
+            };
+
+            // read takes any io::Read and gives a Result<Gpx, Error>.
+            let gpx = read(reader).unwrap();
+
+            let mut previous_point: Option<&Waypoint> = None;
+
+            for track in &gpx.tracks {
+                for segment in &track.segments {
+                    for point in &segment.points {
+                        if point.hdop.unwrap() > 10.0 {
+                            continue;
+                        }
+                        if let Some(previous_point) = previous_point {
+                            let start = Location::new(
+                                previous_point.point().lat(),
+                                previous_point.point().lng(),
+                            );
+                            let end = Location::new(point.point().lat(), point.point().lng());
+                            let distance = start.distance_to(&end).unwrap();
+                            if distance.meters() < 5.0 {
+                                continue;
+                            }
+
+                            trace.distance += distance.meters();
+                            trip.distance += distance.meters();
+
+                            let elevation =
+                                point.elevation.unwrap() - previous_point.elevation.unwrap();
+
+                            if elevation < -0.5 || elevation > 0.5 {
+                                if elevation > 0.0 {
+                                    trace.elevation_positive += elevation;
+                                    trip.elevation_positive += elevation;
+                                } else {
+                                    trace.elevation_negative += elevation * -1.0;
+                                    trip.elevation_negative += elevation * -1.0;
+                                }
+                            }
+                        }
+
+                        previous_point = Some(point);
+                    }
+                }
+            }
+
+            trace.distance_format = format_meters(trace.distance);
+            trace.elevation_positive_format = format_meters(trace.elevation_positive);
+            trace.elevation_negative_format = format_meters(trace.elevation_negative);
+
+            trip.traces.push(trace);
+        }
+
+        trip.distance_format = format_meters(trip.distance);
+        trip.elevation_positive_format = format_meters(trip.elevation_positive);
+        trip.elevation_negative_format = format_meters(trip.elevation_negative);
+
+        trips.push(trip);
+    }
+
+    // let mut traces: Vec<String> =
+    //     .unwrap()
+    //     .map(|maybe_path| {
+    //         dbg!(&maybe_path);
+    //         maybe_path
+    //             .unwrap()
+    //             .path()
+    //             .file_name()
+    //             .unwrap()
+    //             .to_str()
+    //             .unwrap()
+    //             .to_string()
+    //     })
+    //     .collect();
+    // traces.sort();
+
+    trips
+}
+
+fn format_meters(distance: f64) -> String {
+    if distance > 1500.0 {
+        format!("{:.2}km", distance / 1000.0)
+    } else {
+        format!("{distance:.2}m")
     }
 }
 

@@ -15,3 +15,5 @@ yaml-rust = "0.4.4"
 syntect = "4.4"
 regex = "1"
 chrono = { version = "0.4", features = ["serde"] }
+gpx = "0.9.1"
+geoutils = "0.5.1"
